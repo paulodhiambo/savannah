@@ -1,6 +1,7 @@
 package server
 
 import (
+	_ "backend/docs"
 	"backend/internal/routes"
 	"backend/pkg/logging"
 	"github.com/gin-gonic/gin"

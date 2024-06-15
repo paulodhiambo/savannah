@@ -1,0 +1,5 @@
+runtime: go122
+service: savannah-api
+handlers:
+  - url: /.*
+    script: _go_app

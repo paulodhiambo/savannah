@@ -27,11 +27,11 @@ clean:
 
 # Generate Swagger documentation
 document:
-	swag init -g cmd/server/main.go
+	swag init -g main.go
 
 # Run the server
 run:
-	go run cmd/server/main.go
+	go run main.go
 
 # Help message
 help:
