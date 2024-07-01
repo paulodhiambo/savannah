@@ -4,6 +4,7 @@ import (
 	"backend/internal/handlers"
 	"backend/internal/repositories"
 	"github.com/gin-gonic/gin"
+	"github.com/logto-io/go/client"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -16,12 +17,21 @@ func SetupRoutes(router *gin.Engine, logger *logrus.Logger) {
 		panic("Failed to connect to the database!")
 	}
 
+	//logto config
+	logtoConfig := &client.LogtoConfig{
+		Endpoint:  "https://auth.streempoint.com/",
+		AppId:     "nsg5qgl54ysk1sysa7mcq",
+		AppSecret: "cpmnqXe122G0jlMk6tT5Kj06EMvdCZUd",
+	}
+
 	// Initialize repositories and handlers
 	customerRepo := repositories.NewCustomerRepository(db, logger)
 	customerHandler := handlers.NewCustomerHandler(customerRepo, logger)
 
 	orderRepo := repositories.NewOrderRepository(db, logger)
 	orderHandler := handlers.NewOrderHandler(orderRepo, logger)
+
+	authHandler := handlers.NewAuthenticationHandler(logtoConfig, logger)
 
 	// Setup routes
 	v1 := router.Group("/api/v1")
@@ -43,6 +53,14 @@ func SetupRoutes(router *gin.Engine, logger *logrus.Logger) {
 		users := v1.Group("/users")
 		{
 			users.GET("/:user_id/orders", orderHandler.GetOrdersByUserID)
+		}
+
+		authentication := v1.Group("/")
+		{
+			authentication.GET("", authHandler.Home)
+			authentication.GET("/callback", authHandler.CallBack)
+			authentication.GET("/sign-in", authHandler.SignIn)
+
 		}
 	}
 }
