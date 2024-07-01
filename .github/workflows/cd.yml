@@ -26,6 +26,7 @@ jobs:
           export_default_credentials: true
 
       - name: Create .env file
+        working-directory: ./backend
         run: |
           cat <<EOF > .env
           PORT='${{ secrets.PORT }}'
@@ -46,5 +47,6 @@ jobs:
         run: make build
 
       - name: Deploy to App Engine
+        working-directory: ./backend
         run: |
           gcloud app deploy --quiet
