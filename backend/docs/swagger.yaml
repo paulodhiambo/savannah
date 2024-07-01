@@ -19,6 +19,17 @@ definitions:
 info:
   contact: {}
 paths:
+  /:
+    get:
+      description: Display home page with user token
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Display home page
   /api/v1/customers:
     get:
       consumes:
@@ -268,4 +279,26 @@ paths:
       summary: Get orders by user ID
       tags:
       - Orders
+  /callback:
+    get:
+      description: Handle callback from Logto after user signs in
+      produces:
+      - application/json
+      responses:
+        "302":
+          description: Redirect
+          schema:
+            type: string
+      summary: Handle sign-in callback
+  /sign-in:
+    get:
+      description: Redirects the user to the Logto sign-in page
+      produces:
+      - application/json
+      responses:
+        "302":
+          description: Redirect
+          schema:
+            type: string
+      summary: Initiate sign-in process
 swagger: "2.0"
