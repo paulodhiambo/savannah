@@ -13,7 +13,7 @@ mock:
 	mockgen -destination=mocks/mock_order_repository.go -package=mocks backend/internal/repositories OrderRepositoryImpl
 
 # Run tests with coverage
-test: mock
+test:
 	go test ./... -coverprofile=$(COVERAGE_PROFILE)
 
 # Generate coverage report
