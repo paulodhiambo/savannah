@@ -1,14 +1,19 @@
 name: CD
 
 on:
-  push:
-    branches: [ main ]
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
+      - uses: actions/checkout@v4
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
         with:
@@ -20,6 +25,11 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           export_default_credentials: true
 
-      - name: Deploy to App Engine
+      - name: Build
         working-directory: ./backend
-        run: gcloud app deploy app.yaml --quiet
+        run: make build
+
+      - name: Deploy to App Engine
+        run: |
+          cd backend
+          gcloud app deploy app.yaml --quiet

@@ -33,6 +33,10 @@ document:
 run:
 	go run main.go
 
+# build project
+build:
+	go build main.go
+
 # Help message
 help:
 	@echo "Usage:"
