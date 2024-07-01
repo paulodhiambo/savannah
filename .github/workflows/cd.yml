@@ -30,6 +30,7 @@ jobs:
         run: make build
 
       - name: Set environment variables in app.yaml
+        working-directory: ./backend
         run: |
           sed -i "s/^  PORT:.*$/  PORT: '${{ secrets.PORT }}'/" app.yaml
           sed -i "s/^  DB_HOST:.*$/  DB_HOST: '${{ secrets.DB_HOST }}'/" app.yaml
