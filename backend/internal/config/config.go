@@ -16,8 +16,9 @@ type Config struct {
 	DBName             string
 	OpenIDClientID     string
 	OpenIDClientSecret string
-	OpenIDIssuer       string
+	OpenIDEndpoint     string
 	SMSSandboxAPIKey   string
+	SMSSandboxUserName string
 }
 
 var AppConfig Config
@@ -42,11 +43,13 @@ func Load() error {
 		DBName:             getEnv("DB_NAME", "database"),
 		OpenIDClientID:     getEnv("OPENID_CLIENT_ID", ""),
 		OpenIDClientSecret: getEnv("OPENID_CLIENT_SECRET", ""),
-		OpenIDIssuer:       getEnv("OPENID_ISSUER", ""),
+		OpenIDEndpoint:     getEnv("OPENID_ENDPOINT", ""),
 		SMSSandboxAPIKey:   getEnv("SMS_SANDBOX_API_KEY", ""),
+		SMSSandboxUserName: getEnv("SMS_SANDBOX_API_USERNAME", ""),
 	}
 
 	log.Println("Configuration loaded successfully")
+	log.Printf("Configuration loaded successfully %+v", AppConfig)
 	return nil
 }
 

@@ -1,0 +1,27 @@
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+
+# Folders
+_vendor/
+bin/
+release/
+.idea/
+.vscode/
+
+# Compiled Go binary
+main
+
+# Local configuration files
+backend/.env
+
+# macOS specific files/directories
+.DS_Store
+
+# Log files
+*.log
+
+# Go executables
+*.exe
+*.exe~

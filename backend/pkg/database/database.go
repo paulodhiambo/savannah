@@ -1,47 +1,36 @@
 package database
 
 import (
+	"backend/internal/config"
 	"backend/internal/models"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlite"
 	_ "gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"os"
 )
 
 var DB *gorm.DB
 
 // Connect initializes the database connection based on the environment
 func Connect(logger *logrus.Logger) error {
+
 	var (
 		err error
 		dsn string
 	)
 
-	// Check the environment to determine the database driver and DSN
-	//env := os.Getenv("ENVIRONMENT")
-	env := "development"
-	if env == "production" {
-		dbHost := os.Getenv("DB_HOST")
-		dbPort := os.Getenv("DB_PORT")
-		dbUser := os.Getenv("DB_USER")
-		dbPassword := os.Getenv("DB_PASSWORD")
-		dbName := os.Getenv("DB_NAME")
+	err = config.Load()
+	if err != nil {
+		return err
+	}
 
-		dsn = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbHost, dbPort, dbUser, dbPassword, dbName)
-		// Connect to the database
-		if DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{}); err != nil {
-			logger.Warnf("failed to connect to database: %v", err)
-			return fmt.Errorf("failed to connect to database: %v", err)
-		}
-	} else {
-		dsn = "test.db" // SQLite database file for testing
-		if DB, err = gorm.Open(sqlite.Open(dsn), &gorm.Config{}); err != nil {
-			logger.Warnf("failed to connect to database: %v", err)
-			return fmt.Errorf("failed to connect to database: %v", err)
-		}
+	// Check the environment to determine the database driver and DSN
+	dsn = fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable TimeZone=Africa/Nairobi", config.AppConfig.DBHost, config.AppConfig.DBPort, config.AppConfig.DBUser, config.AppConfig.DBPassword, config.AppConfig.DBName)
+	// Connect to the database
+	if DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{}); err != nil {
+		logger.Warnf("failed to connect to database: %v", err)
+		return fmt.Errorf("failed to connect to database: %v", err)
 	}
 
 	// Auto migrate the models

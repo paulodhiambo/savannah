@@ -1,27 +1,32 @@
 package routes
 
 import (
+	"backend/internal/config"
 	"backend/internal/handlers"
 	"backend/internal/repositories"
+	"backend/pkg/database"
 	"github.com/gin-gonic/gin"
 	"github.com/logto-io/go/client"
 	"github.com/sirupsen/logrus"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
 )
 
 func SetupRoutes(router *gin.Engine, logger *logrus.Logger) {
-	// Initialize database connection
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	// Connect to PostgreSQL database
+	err := database.Connect(logger)
+	db := database.DB
 	if err != nil {
 		panic("Failed to connect to the database!")
+	}
+	err = config.Load()
+	if err != nil {
+		return
 	}
 
 	//logto config
 	logtoConfig := &client.LogtoConfig{
-		Endpoint:  "https://auth.streempoint.com/",
-		AppId:     "nsg5qgl54ysk1sysa7mcq",
-		AppSecret: "cpmnqXe122G0jlMk6tT5Kj06EMvdCZUd",
+		Endpoint:  config.AppConfig.OpenIDEndpoint,
+		AppId:     config.AppConfig.OpenIDClientID,
+		AppSecret: config.AppConfig.OpenIDClientSecret,
 	}
 
 	// Initialize repositories and handlers

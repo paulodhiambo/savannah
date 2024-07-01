@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"backend/internal/config"
 	"backend/internal/dto"
 	"backend/internal/models"
 	"backend/internal/repositories"
+	"backend/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -47,7 +49,10 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, dto.BaseResponse{Message: "Failed to create order", StatusCode: http.StatusInternalServerError})
 		return
 	}
-
+	err := utils.SendSMS(config.AppConfig.SMSSandboxAPIKey, config.AppConfig.SMSSandboxUserName, "+254722123123", "Order created successfully")
+	if err != nil {
+		h.logger.Warnf("failed to create order: %v", err)
+	}
 	c.JSON(http.StatusCreated, dto.BaseResponse{Data: order, Message: "Order created successfully", StatusCode: http.StatusCreated})
 }
 
