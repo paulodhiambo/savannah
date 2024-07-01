@@ -2,7 +2,7 @@ name: CD
 
 on:
   workflow_run:
-    workflows: ["CI"]
+    workflows: [ "CI" ]
     types:
       - completed
 
@@ -30,6 +30,29 @@ jobs:
         run: make build
 
       - name: Deploy to App Engine
+        env:
+          PORT: ${{ secrets.PORT }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          OPENID_CLIENT_ID: ${{ secrets.OPENID_CLIENT_ID }}
+          OPENID_CLIENT_SECRET: ${{ secrets.OPENID_CLIENT_SECRET }}
+          OPENID_ISSUER: ${{ secrets.OPENID_ISSUER }}
+          SMS_SANDBOX_API_KEY: ${{ secrets.SMS_SANDBOX_API_KEY }}
         run: |
-          cd backend
-          gcloud app deploy app.yaml --quiet
+          echo "env_variables:" > .env.yaml
+          echo "  PORT: $PORT" >> .env.yaml
+          echo "  DB_HOST: $DB_HOST" >> .env.yaml
+          echo "  DB_PORT: $DB_PORT" >> .env.yaml
+          echo "  DB_USER: $DB_USER" >> .env.yaml
+          echo "  DB_PASSWORD: $DB_PASSWORD" >> .env.yaml
+          echo "  DB_NAME: $DB_NAME" >> .env.yaml
+          echo "  OPENID_CLIENT_ID: $OPENID_CLIENT_ID" >> .env.yaml
+          echo "  OPENID_CLIENT_SECRET: $OPENID_CLIENT_SECRET" >> .env.yaml
+          echo "  OPENID_ISSUER: $OPENID_ISSUER" >> .env.yaml
+          echo "  SMS_SANDBOX_API_KEY: $SMS_SANDBOX_API_KEY" >> .env.yaml
+          
+          # Deploy to App Engine with the environment variables
+          gcloud app deploy --quiet --env-vars-file .env.yaml
