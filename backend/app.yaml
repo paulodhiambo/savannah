@@ -3,3 +3,15 @@ service: savannah-api
 handlers:
   - url: /.*
     script: _go_app
+env_variables:
+  PORT: ""
+  DB_HOST: ""
+  DB_PORT: ""
+  DB_USER: ""
+  DB_PASSWORD: ""
+  DB_NAME: ""
+  OPENID_CLIENT_ID: ""
+  OPENID_CLIENT_SECRET: ""
+  OPENID_ENDPOINT: ""
+  SMS_SANDBOX_API_KEY: ""
+  SMS_SANDBOX_API_USERNAME: ""

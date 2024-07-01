@@ -29,30 +29,20 @@ jobs:
         working-directory: ./backend
         run: make build
 
-      - name: Deploy to App Engine
-        env:
-          PORT: ${{ secrets.PORT }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          OPENID_CLIENT_ID: ${{ secrets.OPENID_CLIENT_ID }}
-          OPENID_CLIENT_SECRET: ${{ secrets.OPENID_CLIENT_SECRET }}
-          OPENID_ISSUER: ${{ secrets.OPENID_ISSUER }}
-          SMS_SANDBOX_API_KEY: ${{ secrets.SMS_SANDBOX_API_KEY }}
+      - name: Set environment variables in app.yaml
         run: |
-          echo "env_variables:" > .env.yaml
-          echo "  PORT: $PORT" >> .env.yaml
-          echo "  DB_HOST: $DB_HOST" >> .env.yaml
-          echo "  DB_PORT: $DB_PORT" >> .env.yaml
-          echo "  DB_USER: $DB_USER" >> .env.yaml
-          echo "  DB_PASSWORD: $DB_PASSWORD" >> .env.yaml
-          echo "  DB_NAME: $DB_NAME" >> .env.yaml
-          echo "  OPENID_CLIENT_ID: $OPENID_CLIENT_ID" >> .env.yaml
-          echo "  OPENID_CLIENT_SECRET: $OPENID_CLIENT_SECRET" >> .env.yaml
-          echo "  OPENID_ISSUER: $OPENID_ISSUER" >> .env.yaml
-          echo "  SMS_SANDBOX_API_KEY: $SMS_SANDBOX_API_KEY" >> .env.yaml
-          
-          # Deploy to App Engine with the environment variables
-          gcloud app deploy --quiet --env-vars-file .env.yaml
+          sed -i "s/^  PORT:.*$/  PORT: '${{ secrets.PORT }}'/" app.yaml
+          sed -i "s/^  DB_HOST:.*$/  DB_HOST: '${{ secrets.DB_HOST }}'/" app.yaml
+          sed -i "s/^  DB_PORT:.*$/  DB_PORT: '${{ secrets.DB_PORT }}'/" app.yaml
+          sed -i "s/^  DB_USER:.*$/  DB_USER: '${{ secrets.DB_USER }}'/" app.yaml
+          sed -i "s/^  DB_PASSWORD:.*$/  DB_PASSWORD: '${{ secrets.DB_PASSWORD }}'/" app.yaml
+          sed -i "s/^  DB_NAME:.*$/  DB_NAME: '${{ secrets.DB_NAME }}'/" app.yaml
+          sed -i "s/^  OPENID_CLIENT_ID:.*$/  OPENID_CLIENT_ID: '${{ secrets.OPENID_CLIENT_ID }}'/" app.yaml
+          sed -i "s/^  OPENID_CLIENT_SECRET:.*$/  OPENID_CLIENT_SECRET: '${{ secrets.OPENID_CLIENT_SECRET }}'/" app.yaml
+          sed -i "s/^  OPENID_ENDPOINT:.*$/  OPENID_ENDPOINT: '${{ secrets.OPENID_ENDPOINT }}'/" app.yaml
+          sed -i "s/^  SMS_SANDBOX_API_KEY:.*$/  SMS_SANDBOX_API_KEY: '${{ secrets.SMS_SANDBOX_API_KEY }}'/" app.yaml
+          sed -i "s/^  SMS_SANDBOX_API_USERNAME:.*$/  SMS_SANDBOX_API_USERNAME: '${{ secrets.SMS_SANDBOX_API_USERNAME }}'/" app.yaml
+
+      - name: Deploy to App Engine
+        run: |
+          gcloud app deploy --quiet
