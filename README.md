@@ -135,4 +135,4 @@ go-app/
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 - Deployed URL: [https://savannah-api-dot-streempoint.ue.r.appspot.com/](https://savannah-api-dot-streempoint.ue.r.appspot.com/)
-- Docs URL: [https://savannah-api-dot-streempoint.ue.r.appspot.com/docs](https://savannah-api-dot-streempoint.ue.r.appspot.com/docs)
+- Docs URL: [https://savannah-api-dot-streempoint.ue.r.appspot.com/docs](https://savannah-api-dot-streempoint.ue.r.appspot.com/swagger/index.html)
