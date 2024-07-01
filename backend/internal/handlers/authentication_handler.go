@@ -19,6 +19,12 @@ func NewAuthenticationHandler(client *client.LogtoConfig, logger *logrus.Logger)
 	return &AuthenticationHandler{logger: logger, client: client}
 }
 
+// Home godoc
+// @Summary Display home page
+// @Description Display home page with user token
+// @Produce html
+// @Success 200 {string} string "OK"
+// @Router / [get]
 func (h *AuthenticationHandler) Home(c *gin.Context) {
 	session := sessions.Default(c)
 	logtoClient := client.NewLogtoClient(
@@ -30,17 +36,30 @@ func (h *AuthenticationHandler) Home(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(logtoClient.GetIdToken())
+
+	idToken := logtoClient.GetIdToken()
+	if idToken == "" {
+		// Redirect to /sign-in if idToken is nil
+		c.Redirect(http.StatusFound, "/sign-in")
+		return
+	}
+
 	data := struct {
 		Token string
 	}{
-		Token: logtoClient.GetIdToken(),
+		Token: idToken,
 	}
 
 	// Render the HTML template with the variable
 	c.HTML(http.StatusOK, "home.html", data)
 }
 
+// SignIn godoc
+// @Summary Initiate sign-in process
+// @Description Redirects the user to the Logto sign-in page
+// @Produce json
+// @Success 302 {string} string "Redirect"
+// @Router /sign-in [get]
 func (h *AuthenticationHandler) SignIn(c *gin.Context) {
 	session := sessions.Default(c)
 	logtoClient := client.NewLogtoClient(
@@ -59,6 +78,12 @@ func (h *AuthenticationHandler) SignIn(c *gin.Context) {
 	c.Redirect(http.StatusTemporaryRedirect, signInUri)
 }
 
+// CallBack godoc
+// @Summary Handle sign-in callback
+// @Description Handle callback from Logto after user signs in
+// @Produce json
+// @Success 302 {string} string "Redirect"
+// @Router /callback [get]
 func (h *AuthenticationHandler) CallBack(c *gin.Context) {
 	session := sessions.Default(c)
 	logtoClient := client.NewLogtoClient(
