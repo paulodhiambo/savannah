@@ -25,24 +25,25 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           export_default_credentials: true
 
+      - name: Create .env file
+        run: |
+          cat <<EOF > .env
+          PORT='${{ secrets.PORT }}'
+          DB_HOST='${{ secrets.DB_HOST }}'
+          DB_PORT='${{ secrets.DB_PORT }}'
+          DB_USER='${{ secrets.DB_USER }}'
+          DB_PASSWORD='${{ secrets.DB_PASSWORD }}'
+          DB_NAME='${{ secrets.DB_NAME }}'
+          OPENID_CLIENT_ID='${{ secrets.OPENID_CLIENT_ID }}'
+          OPENID_CLIENT_SECRET='${{ secrets.OPENID_CLIENT_SECRET }}'
+          OPENID_ENDPOINT='${{ secrets.OPENID_ENDPOINT }}'
+          SMS_SANDBOX_API_KEY='${{ secrets.SMS_SANDBOX_API_KEY }}'
+          SMS_SANDBOX_API_USERNAME='${{ secrets.SMS_SANDBOX_API_USERNAME }}'
+          EOF
+
       - name: Build
         working-directory: ./backend
         run: make build
-
-      - name: Set environment variables in app.yaml
-        working-directory: ./backend
-        run: |
-          sed -i "s/^  PORT:.*$/  PORT: '${{ secrets.PORT }}'/" app.yaml
-          sed -i "s/^  DB_HOST:.*$/  DB_HOST: '${{ secrets.DB_HOST }}'/" app.yaml
-          sed -i "s/^  DB_PORT:.*$/  DB_PORT: '${{ secrets.DB_PORT }}'/" app.yaml
-          sed -i "s/^  DB_USER:.*$/  DB_USER: '${{ secrets.DB_USER }}'/" app.yaml
-          sed -i "s/^  DB_PASSWORD:.*$/  DB_PASSWORD: '${{ secrets.DB_PASSWORD }}'/" app.yaml
-          sed -i "s/^  DB_NAME:.*$/  DB_NAME: '${{ secrets.DB_NAME }}'/" app.yaml
-          sed -i "s/^  OPENID_CLIENT_ID:.*$/  OPENID_CLIENT_ID: '${{ secrets.OPENID_CLIENT_ID }}'/" app.yaml
-          sed -i "s/^  OPENID_CLIENT_SECRET:.*$/  OPENID_CLIENT_SECRET: '${{ secrets.OPENID_CLIENT_SECRET }}'/" app.yaml
-          sed -i "s/^  OPENID_ENDPOINT:.*$/  OPENID_ENDPOINT: '${{ secrets.OPENID_ENDPOINT }}'/" app.yaml
-          sed -i "s/^  SMS_SANDBOX_API_KEY:.*$/  SMS_SANDBOX_API_KEY: '${{ secrets.SMS_SANDBOX_API_KEY }}'/" app.yaml
-          sed -i "s/^  SMS_SANDBOX_API_USERNAME:.*$/  SMS_SANDBOX_API_USERNAME: '${{ secrets.SMS_SANDBOX_API_USERNAME }}'/" app.yaml
 
       - name: Deploy to App Engine
         run: |
