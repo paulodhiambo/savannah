@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"backend/internal/config"
 	"backend/internal/models"
 	"backend/pkg/database"
 	"backend/pkg/logging"
@@ -10,6 +11,10 @@ import (
 )
 
 func TestOrderRepository_Create(t *testing.T) {
+	err := config.Load()
+	if err != nil {
+		return
+	}
 	logger := logging.GetLogger()
 	defer func() {
 		_ = database.DropTables(logger)
@@ -22,13 +27,17 @@ func TestOrderRepository_Create(t *testing.T) {
 	repo := NewOrderRepository(db, logger)
 
 	order := &models.Order{ProductID: 1, Quantity: 2, Total: 39.98, UserId: 1}
-	err := repo.Create(order)
+	err = repo.Create(order)
 	assert.NoError(t, err)
 
 	assert.NotEqual(t, 0, order.ID)
 }
 
 func TestOrderRepository_Update(t *testing.T) {
+	err := config.Load()
+	if err != nil {
+		return
+	}
 	logger := logging.GetLogger()
 	defer func() {
 		_ = database.DropTables(logger)
@@ -41,7 +50,7 @@ func TestOrderRepository_Update(t *testing.T) {
 	repo := NewOrderRepository(db, logger)
 
 	order := &models.Order{ProductID: 1, Quantity: 2, Total: 39.98, UserId: 1}
-	err := repo.Create(order)
+	err = repo.Create(order)
 	assert.NoError(t, err)
 
 	newQuantity := 3
@@ -55,6 +64,10 @@ func TestOrderRepository_Update(t *testing.T) {
 }
 
 func TestOrderRepository_Delete(t *testing.T) {
+	err := config.Load()
+	if err != nil {
+		return
+	}
 	logger := logging.GetLogger()
 	defer func() {
 		_ = database.DropTables(logger)
@@ -67,7 +80,7 @@ func TestOrderRepository_Delete(t *testing.T) {
 	repo := NewOrderRepository(db, logger)
 
 	order := &models.Order{ProductID: 1, Quantity: 2, Total: 39.98, UserId: 1}
-	err := repo.Create(order)
+	err = repo.Create(order)
 	assert.NoError(t, err)
 
 	err = repo.Delete(int(order.ID))
@@ -78,6 +91,10 @@ func TestOrderRepository_Delete(t *testing.T) {
 }
 
 func TestOrderRepository_GetByID(t *testing.T) {
+	err := config.Load()
+	if err != nil {
+		return
+	}
 	logger := logging.GetLogger()
 	defer func() {
 		_ = database.DropTables(logger)
@@ -90,7 +107,7 @@ func TestOrderRepository_GetByID(t *testing.T) {
 	repo := NewOrderRepository(db, logger)
 
 	order := &models.Order{ProductID: 1, Quantity: 2, Total: 39.98, UserId: 1}
-	err := repo.Create(order)
+	err = repo.Create(order)
 	assert.NoError(t, err)
 
 	fetchedOrder, err := repo.GetByID(int(order.ID))
@@ -100,6 +117,10 @@ func TestOrderRepository_GetByID(t *testing.T) {
 }
 
 func TestOrderRepository_GetAll(t *testing.T) {
+	err := config.Load()
+	if err != nil {
+		return
+	}
 	logger := logging.GetLogger()
 	defer func() {
 		_ = database.DropTables(logger)
@@ -132,6 +153,10 @@ func TestOrderRepository_GetAll(t *testing.T) {
 }
 
 func TestOrderRepository_GetOrdersByUserID(t *testing.T) {
+	err := config.Load()
+	if err != nil {
+		return
+	}
 	logger := logging.GetLogger()
 	defer func() {
 		_ = database.DropTables(logger)

@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"backend/internal/config"
 	"backend/internal/models"
 	"backend/pkg/database"
 	"backend/pkg/logging"
@@ -10,6 +11,10 @@ import (
 )
 
 func TestCustomerRepository_Create(t *testing.T) {
+	err := config.Load()
+	if err != nil {
+		return
+	}
 	logger := logging.GetLogger()
 	defer func() {
 		_ = database.DropTables(logger)
@@ -22,12 +27,16 @@ func TestCustomerRepository_Create(t *testing.T) {
 	repo := NewCustomerRepository(db, logger)
 
 	customer := &models.Customer{Name: "John Doe", Code: "C123"}
-	err := repo.Create(customer)
+	err = repo.Create(customer)
 	assert.NoError(t, err)
 	assert.NotEqual(t, 0, customer.ID)
 }
 
 func TestCustomerRepository_Update(t *testing.T) {
+	err := config.Load()
+	if err != nil {
+		return
+	}
 	logger := logging.GetLogger()
 	defer func() {
 		_ = database.DropTables(logger)
@@ -40,7 +49,7 @@ func TestCustomerRepository_Update(t *testing.T) {
 	repo := NewCustomerRepository(db, logger)
 
 	customer := &models.Customer{Name: "John Doe", Code: "C123"}
-	err := repo.Create(customer)
+	err = repo.Create(customer)
 	assert.NoError(t, err)
 
 	newName := "Jane Doe"
@@ -53,6 +62,10 @@ func TestCustomerRepository_Update(t *testing.T) {
 }
 
 func TestCustomerRepository_GetAll(t *testing.T) {
+	err := config.Load()
+	if err != nil {
+		return
+	}
 	logger := logging.GetLogger()
 	defer func() {
 		_ = database.DropTables(logger)

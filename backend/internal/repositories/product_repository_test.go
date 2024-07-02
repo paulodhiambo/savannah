@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"backend/internal/config"
 	"backend/internal/models"
 	"backend/pkg/database"
 	"backend/pkg/logging"
@@ -9,6 +10,10 @@ import (
 )
 
 func TestProductRepository_Create(t *testing.T) {
+	err := config.Load()
+	if err != nil {
+		return
+	}
 	logger := logging.GetLogger()
 	defer func() {
 		_ = database.DropTables(logger)
@@ -21,13 +26,17 @@ func TestProductRepository_Create(t *testing.T) {
 	repo := NewProductRepository(db, logger)
 
 	product := &models.Product{Name: "Test Product", Description: "Test Description", Price: 19.99}
-	err := repo.Create(product)
+	err = repo.Create(product)
 	assert.NoError(t, err)
 
 	assert.NotEqual(t, 0, product.ID)
 }
 
 func TestProductRepository_Update(t *testing.T) {
+	err := config.Load()
+	if err != nil {
+		return
+	}
 	logger := logging.GetLogger()
 	defer func() {
 		_ = database.DropTables(logger)
@@ -40,7 +49,7 @@ func TestProductRepository_Update(t *testing.T) {
 	repo := NewProductRepository(db, logger)
 
 	product := &models.Product{Name: "Test Product", Description: "Test Description", Price: 19.99}
-	err := repo.Create(product)
+	err = repo.Create(product)
 	assert.NoError(t, err)
 
 	newPrice := 29.99
@@ -54,6 +63,10 @@ func TestProductRepository_Update(t *testing.T) {
 }
 
 func TestProductRepository_Delete(t *testing.T) {
+	err := config.Load()
+	if err != nil {
+		return
+	}
 	logger := logging.GetLogger()
 	defer func() {
 		_ = database.DropTables(logger)
@@ -66,7 +79,7 @@ func TestProductRepository_Delete(t *testing.T) {
 	repo := NewProductRepository(db, logger)
 
 	product := &models.Product{Name: "Test Product", Description: "Test Description", Price: 19.99}
-	err := repo.Create(product)
+	err = repo.Create(product)
 	assert.NoError(t, err)
 
 	err = repo.Delete(int(product.ID))
@@ -77,6 +90,10 @@ func TestProductRepository_Delete(t *testing.T) {
 }
 
 func TestProductRepository_GetByID(t *testing.T) {
+	err := config.Load()
+	if err != nil {
+		return
+	}
 	logger := logging.GetLogger()
 	defer func() {
 		_ = database.DropTables(logger)
@@ -89,7 +106,7 @@ func TestProductRepository_GetByID(t *testing.T) {
 	repo := NewProductRepository(db, logger)
 
 	product := &models.Product{Name: "Test Product", Description: "Test Description", Price: 19.99}
-	err := repo.Create(product)
+	err = repo.Create(product)
 	assert.NoError(t, err)
 
 	fetchedProduct, err := repo.GetByID(int(product.ID))
@@ -99,6 +116,10 @@ func TestProductRepository_GetByID(t *testing.T) {
 }
 
 func TestProductRepository_GetAll(t *testing.T) {
+	err := config.Load()
+	if err != nil {
+		return
+	}
 	logger := logging.GetLogger()
 	defer func() {
 		_ = database.DropTables(logger)
