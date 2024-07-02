@@ -6,7 +6,10 @@ import (
 	"backend/internal/repositories"
 	"backend/pkg/database"
 	"github.com/gin-gonic/gin"
-	"github.com/logto-io/go/client"
+	gorrilla "github.com/gorilla/sessions"
+	"github.com/markbates/goth"
+	"github.com/markbates/goth/gothic"
+	"github.com/markbates/goth/providers/github"
 	"github.com/sirupsen/logrus"
 )
 
@@ -22,12 +25,9 @@ func SetupRoutes(router *gin.Engine, logger *logrus.Logger) {
 		return
 	}
 
-	//logto config
-	logtoConfig := &client.LogtoConfig{
-		Endpoint:  config.AppConfig.OpenIDEndpoint,
-		AppId:     config.AppConfig.OpenIDClientID,
-		AppSecret: config.AppConfig.OpenIDClientSecret,
-	}
+	githubProvider := github.New(config.AppConfig.GithubClientID, config.AppConfig.GithubClientSecret, config.AppConfig.CallbackUrl)
+	goth.UseProviders(githubProvider)
+	gothic.Store = gorrilla.NewCookieStore([]byte(config.AppConfig.GithubClientID))
 
 	// Initialize repositories and handlers
 	customerRepo := repositories.NewCustomerRepository(db, logger)
@@ -36,7 +36,7 @@ func SetupRoutes(router *gin.Engine, logger *logrus.Logger) {
 	orderRepo := repositories.NewOrderRepository(db, logger)
 	orderHandler := handlers.NewOrderHandler(orderRepo, logger)
 
-	authHandler := handlers.NewAuthenticationHandler(logtoConfig, logger)
+	authHandler := handlers.NewAuthenticationHandler(logger)
 
 	// Setup routes
 	v1 := router.Group("/api/v1")
@@ -60,11 +60,11 @@ func SetupRoutes(router *gin.Engine, logger *logrus.Logger) {
 			users.GET("/:user_id/orders", orderHandler.GetOrdersByUserID)
 		}
 
-		authentication := v1.Group("/")
+		authentication := v1.Group("/auth")
 		{
-			authentication.GET("", authHandler.Home)
+			authentication.GET("/", authHandler.Home)
 			authentication.GET("/callback", authHandler.CallBack)
-			authentication.GET("/sign-in", authHandler.SignIn)
+			authentication.GET("/login", authHandler.SignIn)
 
 		}
 	}

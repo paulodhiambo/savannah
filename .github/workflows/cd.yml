@@ -35,9 +35,9 @@ jobs:
           DB_USER='${{ secrets.DB_USER }}'
           DB_PASSWORD='${{ secrets.DB_PASSWORD }}'
           DB_NAME='${{ secrets.DB_NAME }}'
-          OPENID_CLIENT_ID='${{ secrets.OPENID_CLIENT_ID }}'
-          OPENID_CLIENT_SECRET='${{ secrets.OPENID_CLIENT_SECRET }}'
-          OPENID_ENDPOINT='${{ secrets.OPENID_ENDPOINT }}'
+          CLIENT_ID='${{ secrets.CLIENT_ID }}'
+          CLIENT_SECRET='${{ secrets.CLIENT_SECRET }}'
+          CALL_BACK_URL='${{ secrets.CALL_BACK_URL }}'
           SMS_SANDBOX_API_KEY='${{ secrets.SMS_SANDBOX_API_KEY }}'
           SMS_SANDBOX_API_USERNAME='${{ secrets.SMS_SANDBOX_API_USERNAME }}'
           EOF

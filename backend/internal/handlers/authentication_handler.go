@@ -1,22 +1,21 @@
 package handlers
 
 import (
-	"backend/pkg/authentication"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/logto-io/go/client"
+	"github.com/markbates/goth/gothic"
 	"github.com/sirupsen/logrus"
 	"net/http"
 )
 
 type AuthenticationHandler struct {
 	logger *logrus.Logger
-	client *client.LogtoConfig
 }
 
-func NewAuthenticationHandler(client *client.LogtoConfig, logger *logrus.Logger) *AuthenticationHandler {
-	return &AuthenticationHandler{logger: logger, client: client}
+func NewAuthenticationHandler(logger *logrus.Logger) *AuthenticationHandler {
+	return &AuthenticationHandler{logger: logger}
 }
 
 // Home godoc
@@ -27,29 +26,12 @@ func NewAuthenticationHandler(client *client.LogtoConfig, logger *logrus.Logger)
 // @Router / [get]
 func (h *AuthenticationHandler) Home(c *gin.Context) {
 	session := sessions.Default(c)
-	logtoClient := client.NewLogtoClient(
-		h.client,
-		&authentication.SessionStorage{Session: session},
-	)
-
-	_, err := logtoClient.GetAccessToken("https://savannah-api-dot-streempoint.ue.r.appspot.com/api")
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	idToken := logtoClient.GetIdToken()
-	if idToken == "" {
-		// Redirect to /sign-in if idToken is nil
-		c.Redirect(http.StatusFound, "/sign-in")
-		return
-	}
-
+	user := session.Get("user")
 	data := struct {
-		Token string
+		Token interface{}
 	}{
-		Token: idToken,
+		Token: user,
 	}
-
 	// Render the HTML template with the variable
 	c.HTML(http.StatusOK, "home.html", data)
 }
@@ -59,23 +41,12 @@ func (h *AuthenticationHandler) Home(c *gin.Context) {
 // @Description Redirects the user to the Logto sign-in page
 // @Produce json
 // @Success 302 {string} string "Redirect"
-// @Router /sign-in [get]
+// @Router /api/v1/auth/login [get]
 func (h *AuthenticationHandler) SignIn(c *gin.Context) {
-	session := sessions.Default(c)
-	logtoClient := client.NewLogtoClient(
-		h.client,
-		&authentication.SessionStorage{Session: session},
-	)
-
-	// The user will be redirected to the Redirect URI on signed in.
-	signInUri, err := logtoClient.SignIn("https://6c84-105-163-1-253.ngrok-free.app/callback")
-	if err != nil {
-		c.String(http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	// Redirect the user to the Logto sign-in page.
-	c.Redirect(http.StatusTemporaryRedirect, signInUri)
+	q := c.Request.URL.Query()
+	q.Add("provider", "github")
+	c.Request.URL.RawQuery = q.Encode()
+	gothic.BeginAuthHandler(c.Writer, c.Request)
 }
 
 // CallBack godoc
@@ -83,20 +54,34 @@ func (h *AuthenticationHandler) SignIn(c *gin.Context) {
 // @Description Handle callback from Logto after user signs in
 // @Produce json
 // @Success 302 {string} string "Redirect"
-// @Router /callback [get]
+// @Router /api/v1/auth/callback [get]
 func (h *AuthenticationHandler) CallBack(c *gin.Context) {
-	session := sessions.Default(c)
-	logtoClient := client.NewLogtoClient(
-		h.client,
-		&authentication.SessionStorage{Session: session},
-	)
-	// The sign-in callback request is handled by Logto
-	err := logtoClient.HandleSignInCallback(c.Request)
+	htmlFormat := `<html><body>%v</body></html>`
+	q := c.Request.URL.Query()
+	q.Add("provider", "github")
+	c.Request.URL.RawQuery = q.Encode()
+	user, err := gothic.CompleteUserAuth(c.Writer, c.Request)
 	if err != nil {
-		c.String(http.StatusInternalServerError, err.Error())
+		err = c.AbortWithError(http.StatusInternalServerError, err)
+		h.logger.Error(err)
 		return
 	}
+	res, err := json.Marshal(user)
+	if err != nil {
+		err = c.AbortWithError(http.StatusInternalServerError, err)
+		h.logger.Error(err)
+		return
+	}
+	session := sessions.Default(c)
+	session.Set("user", user)
+	err = session.Save()
 
-	// This example takes the user back to the home page.
-	c.Redirect(http.StatusTemporaryRedirect, "/")
+	if err != nil {
+		err = c.AbortWithError(http.StatusInternalServerError, err)
+		h.logger.Error(err)
+		return
+	}
+	jsonString := string(res)
+	html := fmt.Sprintf(htmlFormat, jsonString)
+	c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(html))
 }

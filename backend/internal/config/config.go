@@ -14,11 +14,11 @@ type Config struct {
 	DBUser             string
 	DBPassword         string
 	DBName             string
-	OpenIDClientID     string
-	OpenIDClientSecret string
-	OpenIDEndpoint     string
 	SMSSandboxAPIKey   string
 	SMSSandboxUserName string
+	GithubClientID     string
+	GithubClientSecret string
+	CallbackUrl        string
 }
 
 var AppConfig Config
@@ -41,14 +41,13 @@ func Load() error {
 		DBUser:             getEnv("DB_USER", "user"),
 		DBPassword:         getEnv("DB_PASSWORD", "password"),
 		DBName:             getEnv("DB_NAME", "database"),
-		OpenIDClientID:     getEnv("OPENID_CLIENT_ID", ""),
-		OpenIDClientSecret: getEnv("OPENID_CLIENT_SECRET", ""),
-		OpenIDEndpoint:     getEnv("OPENID_ENDPOINT", ""),
 		SMSSandboxAPIKey:   getEnv("SMS_SANDBOX_API_KEY", ""),
 		SMSSandboxUserName: getEnv("SMS_SANDBOX_API_USERNAME", ""),
+		GithubClientID:     getEnv("CLIENT_ID", ""),
+		GithubClientSecret: getEnv("CLIENT_SECRET", ""),
+		CallbackUrl:        getEnv("CALL_BACK_URL", ""),
 	}
 
-	log.Println("Configuration loaded successfully")
 	log.Printf("Configuration loaded successfully %+v", AppConfig)
 	return nil
 }

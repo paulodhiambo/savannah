@@ -4,8 +4,6 @@ import (
 	_ "backend/docs"
 	"backend/internal/routes"
 	"backend/pkg/logging"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
 	_ "github.com/gin-contrib/sessions/memstore"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -27,9 +25,6 @@ func Run() error {
 	logger := logging.GetLogger()
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*.html")
-
-	store := cookie.NewStore([]byte("secret"))
-	router.Use(sessions.Sessions("mysession", store))
 
 	// Setup routes
 	routes.SetupRoutes(router, logger)
