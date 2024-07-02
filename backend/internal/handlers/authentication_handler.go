@@ -26,17 +26,11 @@ func (h *AuthenticationHandler) Home(c *gin.Context) {
 	session := sessions.Default(c)
 	user := session.Get("user")
 	if user == nil {
-		c.Redirect(http.StatusFound, "/sign-in")
+		c.Redirect(http.StatusFound, "/api/v1/auth/login")
 		return
 	}
 
-	data := struct {
-		Token interface{}
-	}{
-		Token: user,
-	}
-	// Render the HTML template with the variable
-	c.HTML(http.StatusOK, "home.html", data)
+	c.JSON(http.StatusOK, user)
 }
 
 // SignIn godoc
