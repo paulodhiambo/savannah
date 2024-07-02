@@ -45,6 +45,8 @@ func SetupRoutes(router *gin.Engine, logger *logrus.Logger) {
 	authHandler := handlers.NewAuthenticationHandler(logger)
 
 	// Setup routes
+	router.GET("", authHandler.Home)
+
 	v1 := router.Group("/api/v1")
 	{
 		customers := v1.Group("/customers")
@@ -71,7 +73,6 @@ func SetupRoutes(router *gin.Engine, logger *logrus.Logger) {
 
 		authentication := v1.Group("/auth")
 		{
-			authentication.GET("/", authHandler.Home)
 			authentication.GET("/callback", authHandler.CallBack)
 			authentication.GET("/login", authHandler.SignIn)
 
