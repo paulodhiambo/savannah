@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/markbates/goth/gothic"
@@ -27,6 +25,11 @@ func NewAuthenticationHandler(logger *logrus.Logger) *AuthenticationHandler {
 func (h *AuthenticationHandler) Home(c *gin.Context) {
 	session := sessions.Default(c)
 	user := session.Get("user")
+	if user == nil {
+		c.Redirect(http.StatusFound, "/sign-in")
+		return
+	}
+
 	data := struct {
 		Token interface{}
 	}{
@@ -38,7 +41,7 @@ func (h *AuthenticationHandler) Home(c *gin.Context) {
 
 // SignIn godoc
 // @Summary Initiate sign-in process
-// @Description Redirects the user to the Logto sign-in page
+// @Description Redirects the user to Oauth Login page
 // @Produce json
 // @Success 302 {string} string "Redirect"
 // @Router /api/v1/auth/login [get]
@@ -51,12 +54,11 @@ func (h *AuthenticationHandler) SignIn(c *gin.Context) {
 
 // CallBack godoc
 // @Summary Handle sign-in callback
-// @Description Handle callback from Logto after user signs in
+// @Description Handle callback from Oauth
 // @Produce json
 // @Success 302 {string} string "Redirect"
 // @Router /api/v1/auth/callback [get]
 func (h *AuthenticationHandler) CallBack(c *gin.Context) {
-	htmlFormat := `<html><body>%v</body></html>`
 	q := c.Request.URL.Query()
 	q.Add("provider", "github")
 	c.Request.URL.RawQuery = q.Encode()
@@ -66,22 +68,14 @@ func (h *AuthenticationHandler) CallBack(c *gin.Context) {
 		h.logger.Error(err)
 		return
 	}
-	res, err := json.Marshal(user)
-	if err != nil {
-		err = c.AbortWithError(http.StatusInternalServerError, err)
-		h.logger.Error(err)
-		return
-	}
 	session := sessions.Default(c)
 	session.Set("user", user)
 	err = session.Save()
-
 	if err != nil {
-		err = c.AbortWithError(http.StatusInternalServerError, err)
 		h.logger.Error(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	jsonString := string(res)
-	html := fmt.Sprintf(htmlFormat, jsonString)
-	c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(html))
+
+	c.JSON(http.StatusOK, user)
 }

@@ -19,6 +19,7 @@ type Config struct {
 	GithubClientID     string
 	GithubClientSecret string
 	CallbackUrl        string
+	Secret             string
 }
 
 var AppConfig Config
@@ -46,6 +47,7 @@ func Load() error {
 		GithubClientID:     getEnv("CLIENT_ID", ""),
 		GithubClientSecret: getEnv("CLIENT_SECRET", ""),
 		CallbackUrl:        getEnv("CALL_BACK_URL", ""),
+		Secret:             getEnv("SECRET", ""),
 	}
 
 	log.Printf("Configuration loaded successfully %+v", AppConfig)

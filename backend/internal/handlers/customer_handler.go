@@ -34,6 +34,7 @@ func NewCustomerHandler(repo repositories.CustomerRepositoryImpl, logger *logrus
 // @Param name body string true "Customer name"
 // @Param code body string true "Customer code"
 // @Success 201 {object} dto.BaseResponse
+// @Security ApiKeyAuth
 // @Failure 400 {object} dto.BaseResponse
 // @Router /api/v1/customers [post]
 func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
@@ -73,6 +74,7 @@ func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
 // @Param name body string true "Customer name"
 // @Param code body string true "Customer code"
 // @Success 200 {object} dto.BaseResponse
+// @Security ApiKeyAuth
 // @Failure 400 {object} dto.BaseResponse
 // @Router /api/v1/customers/{id} [put]
 func (h *CustomerHandler) UpdateCustomer(c *gin.Context) {
@@ -111,6 +113,7 @@ func (h *CustomerHandler) UpdateCustomer(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200 {array} dto.BaseResponse
+// @Security ApiKeyAuth
 // @Failure 400 {object} dto.BaseResponse
 // @Router /api/v1/customers [get]
 func (h *CustomerHandler) GetAllCustomers(c *gin.Context) {

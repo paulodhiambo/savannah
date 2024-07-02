@@ -40,6 +40,7 @@ jobs:
           CALL_BACK_URL='${{ secrets.CALL_BACK_URL }}'
           SMS_SANDBOX_API_KEY='${{ secrets.SMS_SANDBOX_API_KEY }}'
           SMS_SANDBOX_API_USERNAME='${{ secrets.SMS_SANDBOX_API_USERNAME }}'
+          SECRET='${{ secrets.SECRET }}'
           EOF
 
       - name: Build

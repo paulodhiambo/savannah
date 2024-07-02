@@ -28,6 +28,7 @@ func NewOrderHandler(repo repositories.OrderRepositoryImpl, logger *logrus.Logge
 // @Produce json
 // @Param order body dto.CreateOrderRequest true "Order"
 // @Success 201 {object} dto.BaseResponse
+// @Security ApiKeyAuth
 // @Failure 400 {object} dto.BaseResponse
 // @Failure 500 {object} dto.BaseResponse
 // @Router /api/v1/orders [post]
@@ -64,6 +65,7 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 // @Param id path int true "Order ID"
 // @Param order body dto.CreateOrderRequest true "Order"
 // @Success 200 {object} dto.BaseResponse
+// @Security ApiKeyAuth
 // @Failure 400 {object} dto.BaseResponse
 // @Failure 500 {object} dto.BaseResponse
 // @Router /api/v1/orders/{id} [put]
@@ -106,6 +108,7 @@ func (h *OrderHandler) UpdateOrder(c *gin.Context) {
 // @Produce json
 // @Param id path int true "Order ID"
 // @Success 204 {object} dto.BaseResponse
+// @Security ApiKeyAuth
 // @Failure 400 {object} dto.BaseResponse
 // @Failure 500 {object} dto.BaseResponse
 // @Router /api/v1/orders/{id} [delete]
@@ -133,6 +136,7 @@ func (h *OrderHandler) DeleteOrder(c *gin.Context) {
 // @Produce json
 // @Param id path int true "Order ID"
 // @Success 200 {object} dto.BaseResponse
+// @Security ApiKeyAuth
 // @Failure 400 {object} dto.BaseResponse
 // @Failure 500 {object} dto.BaseResponse
 // @Router /api/v1/orders/{id} [get]
@@ -160,6 +164,7 @@ func (h *OrderHandler) GetOrderByID(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200 {object} dto.BaseResponse
+// @Security ApiKeyAuth
 // @Failure 500 {object} dto.BaseResponse
 // @Router /api/v1/orders [get]
 func (h *OrderHandler) GetAllOrders(c *gin.Context) {
@@ -181,6 +186,7 @@ func (h *OrderHandler) GetAllOrders(c *gin.Context) {
 // @Produce json
 // @Param user_id path int true "User ID"
 // @Success 200 {object} dto.BaseResponse
+// @Security ApiKeyAuth
 // @Failure 400 {object} dto.BaseResponse
 // @Failure 500 {object} dto.BaseResponse
 // @Router /api/v1/users/{user_id}/orders [get]

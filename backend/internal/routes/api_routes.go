@@ -3,8 +3,11 @@ package routes
 import (
 	"backend/internal/config"
 	"backend/internal/handlers"
+	"backend/internal/middleware"
 	"backend/internal/repositories"
 	"backend/pkg/database"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	gorrilla "github.com/gorilla/sessions"
 	"github.com/markbates/goth"
@@ -25,6 +28,9 @@ func SetupRoutes(router *gin.Engine, logger *logrus.Logger) {
 		return
 	}
 
+	store := cookie.NewStore([]byte(config.AppConfig.Secret))
+	router.Use(sessions.Sessions("session", store))
+
 	githubProvider := github.New(config.AppConfig.GithubClientID, config.AppConfig.GithubClientSecret, config.AppConfig.CallbackUrl)
 	goth.UseProviders(githubProvider)
 	gothic.Store = gorrilla.NewCookieStore([]byte(config.AppConfig.GithubClientID))
@@ -42,12 +48,14 @@ func SetupRoutes(router *gin.Engine, logger *logrus.Logger) {
 	v1 := router.Group("/api/v1")
 	{
 		customers := v1.Group("/customers")
+		customers.Use(middleware.AuthMiddleware())
 		{
 			customers.GET("", customerHandler.GetAllCustomers)
 			customers.POST("", customerHandler.CreateCustomer)
 			customers.PUT("/:id", customerHandler.UpdateCustomer)
 		}
 		orders := v1.Group("/orders")
+		orders.Use(middleware.AuthMiddleware())
 		{
 			orders.POST("", orderHandler.CreateOrder)
 			orders.PUT("/:id", orderHandler.UpdateOrder)
@@ -56,6 +64,7 @@ func SetupRoutes(router *gin.Engine, logger *logrus.Logger) {
 			orders.GET("", orderHandler.GetAllOrders)
 		}
 		users := v1.Group("/users")
+		users.Use(middleware.AuthMiddleware())
 		{
 			users.GET("/:user_id/orders", orderHandler.GetOrdersByUserID)
 		}
