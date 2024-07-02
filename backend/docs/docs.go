@@ -32,6 +32,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/auth/callback": {
+            "get": {
+                "description": "Handle callback from Logto after user signs in",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Handle sign-in callback",
+                "responses": {
+                    "302": {
+                        "description": "Redirect",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/login": {
+            "get": {
+                "description": "Redirects the user to the Logto sign-in page",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Initiate sign-in process",
+                "responses": {
+                    "302": {
+                        "description": "Redirect",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/customers": {
             "get": {
                 "description": "Get all customers",
@@ -408,40 +442,6 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/dto.BaseResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/callback": {
-            "get": {
-                "description": "Handle callback from Logto after user signs in",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Handle sign-in callback",
-                "responses": {
-                    "302": {
-                        "description": "Redirect",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/sign-in": {
-            "get": {
-                "description": "Redirects the user to the Logto sign-in page",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Initiate sign-in process",
-                "responses": {
-                    "302": {
-                        "description": "Redirect",
-                        "schema": {
-                            "type": "string"
                         }
                     }
                 }
