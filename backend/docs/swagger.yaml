@@ -32,7 +32,7 @@ paths:
       summary: Display home page
   /api/v1/auth/callback:
     get:
-      description: Handle callback from Logto after user signs in
+      description: Handle callback from Oauth
       produces:
       - application/json
       responses:
@@ -43,7 +43,7 @@ paths:
       summary: Handle sign-in callback
   /api/v1/auth/login:
     get:
-      description: Redirects the user to the Logto sign-in page
+      description: Redirects the user to Oauth Login page
       produces:
       - application/json
       responses:
@@ -70,6 +70,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/dto.BaseResponse'
+      security:
+      - ApiKeyAuth: []
       tags:
       - Customers
     post:
@@ -100,6 +102,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/dto.BaseResponse'
+      security:
+      - ApiKeyAuth: []
       tags:
       - Customers
   /api/v1/customers/{id}:
@@ -136,6 +140,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/dto.BaseResponse'
+      security:
+      - ApiKeyAuth: []
       tags:
       - Customers
   /api/v1/orders:
@@ -154,6 +160,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.BaseResponse'
+      security:
+      - ApiKeyAuth: []
       tags:
       - Orders
     post:
@@ -182,6 +190,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.BaseResponse'
+      security:
+      - ApiKeyAuth: []
       tags:
       - Orders
   /api/v1/orders/{id}:
@@ -210,6 +220,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.BaseResponse'
+      security:
+      - ApiKeyAuth: []
       tags:
       - Orders
     get:
@@ -237,6 +249,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.BaseResponse'
+      security:
+      - ApiKeyAuth: []
       tags:
       - Orders
     put:
@@ -270,6 +284,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.BaseResponse'
+      security:
+      - ApiKeyAuth: []
       tags:
       - Orders
   /api/v1/users/{user_id}/orders:
@@ -298,6 +314,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.BaseResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Get orders by user ID
       tags:
       - Orders

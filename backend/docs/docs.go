@@ -34,7 +34,7 @@ const docTemplate = `{
         },
         "/api/v1/auth/callback": {
             "get": {
-                "description": "Handle callback from Logto after user signs in",
+                "description": "Handle callback from Oauth",
                 "produces": [
                     "application/json"
                 ],
@@ -51,7 +51,7 @@ const docTemplate = `{
         },
         "/api/v1/auth/login": {
             "get": {
-                "description": "Redirects the user to the Logto sign-in page",
+                "description": "Redirects the user to Oauth Login page",
                 "produces": [
                     "application/json"
                 ],
@@ -68,6 +68,11 @@ const docTemplate = `{
         },
         "/api/v1/customers": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get all customers",
                 "consumes": [
                     "application/json"
@@ -97,6 +102,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create a new customer",
                 "consumes": [
                     "application/json"
@@ -145,6 +155,11 @@ const docTemplate = `{
         },
         "/api/v1/customers/{id}": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Update an existing customer",
                 "consumes": [
                     "application/json"
@@ -200,6 +215,11 @@ const docTemplate = `{
         },
         "/api/v1/orders": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get all orders",
                 "consumes": [
                     "application/json"
@@ -226,6 +246,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create a new order",
                 "consumes": [
                     "application/json"
@@ -271,6 +296,11 @@ const docTemplate = `{
         },
         "/api/v1/orders/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get an order by ID",
                 "consumes": [
                     "application/json"
@@ -312,6 +342,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Update an existing order",
                 "consumes": [
                     "application/json"
@@ -362,6 +397,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete an existing order",
                 "consumes": [
                     "application/json"
@@ -405,6 +445,11 @@ const docTemplate = `{
         },
         "/api/v1/users/{user_id}/orders": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get orders by user ID",
                 "consumes": [
                     "application/json"
